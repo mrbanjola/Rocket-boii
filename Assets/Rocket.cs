@@ -8,6 +8,8 @@ public class Rocket : MonoBehaviour
 
     Rigidbody rigidBody;
     AudioSource audioSource;
+    [SerializeField] float rcsThrust = 150f;
+    [SerializeField] float rocketThrust = 30f;
 
 
     // Start is called before the first frame update
@@ -20,20 +22,68 @@ public class Rocket : MonoBehaviour
     }
     void Update()
     {
-        ProcessInput();
+        Thrust();
+
+        Rotate();
+
+
     }
 
-    private void ProcessInput()
+
+
+    private void OnCollisionEnter(Collision collision)
     {
-      if (Input.GetKey(KeyCode.Space))
+       
+        switch (collision.gameObject.tag)
         {
-            rigidBody.AddRelativeForce(Vector3.up);
+            case "Friendly":
+
+                print("okay");
+                break;
+            default:
+
+                print("Dead");
+                break;
+        }
+
+    }
+
+    private void Rotate()
+    {
+
+        rigidBody.freezeRotation = true;
+
+        
+        float rotationThisFrame;
+
+        if (Input.GetKey(KeyCode.LeftArrow))
+        {
+
+            rotationThisFrame = rcsThrust * Time.deltaTime;
+
+            transform.Rotate(Vector3.forward * rotationThisFrame); ;
+
+        }
+        else if (Input.GetKey(KeyCode.RightArrow))
+        {
+            rotationThisFrame = rcsThrust * Time.deltaTime;
+            transform.Rotate(Vector3.back * rotationThisFrame);
+        }
+
+        rigidBody.freezeRotation = false;
+    }
+
+    private void Thrust()
+    {
+        if (Input.GetKey(KeyCode.Space))
+        {
+            rigidBody.AddRelativeForce(Vector3.up * rocketThrust);
             if (!audioSource.isPlaying)
             {
                 audioSource.Play();
             }
-            
-            
+
+
         }
 
         if (Input.GetKeyUp(KeyCode.Space))
@@ -45,16 +95,6 @@ public class Rocket : MonoBehaviour
             }
 
 
-        }
-
-        if (Input.GetKey(KeyCode.LeftArrow))
-        {
-
-            transform.Rotate(Vector3.forward);
-
-        } else if (Input.GetKey(KeyCode.RightArrow))
-        {
-            transform.Rotate(Vector3.back);
         }
     }
 }
