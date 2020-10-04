@@ -35,6 +35,7 @@ public class Rocket : MonoBehaviour
         if (Input.GetKey(KeyCode.R))
         {
             rigidBody.transform.position = new Vector3(-45, 5, 0);
+            rigidBody.transform.rotation = Quaternion.Euler(0, 0, 0);
         }
     }
 
@@ -57,6 +58,7 @@ public class Rocket : MonoBehaviour
 
                 print("Dead");
                 rigidBody.transform.position = new Vector3(-45, 5, 0);
+                rigidBody.transform.rotation = Quaternion.Euler(0, 0, 0);
 
                 break;
         }
