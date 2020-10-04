@@ -26,10 +26,17 @@ public class Rocket : MonoBehaviour
 
         Rotate();
 
+        resetPosition();
 
     }
 
-
+    private void resetPosition()
+    {
+        if (Input.GetKey(KeyCode.R))
+        {
+            rigidBody.transform.position = new Vector3(-45, 5, 0);
+        }
+    }
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -40,9 +47,17 @@ public class Rocket : MonoBehaviour
 
                 print("okay");
                 break;
+
+            case "Finish":
+
+                print("Finished");
+                    break;
+
             default:
 
                 print("Dead");
+                rigidBody.transform.position = new Vector3(-45, 5, 0);
+
                 break;
         }
 
