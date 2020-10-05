@@ -7,20 +7,30 @@ public class Rocket : MonoBehaviour
 
     Rigidbody rigidBody;
     AudioSource audioSource;
+   
 
     enum State { Alive, Dying, Transcending };
     State state = State.Alive;
 
+    // Values for thrust and rotational speed.
     [SerializeField] float rcsThrust = 200f;
     [SerializeField] float rocketThrust = 45f;
+
+    // Game sounds
     [SerializeField] AudioClip mainEngine;
     [SerializeField] AudioClip crashSound;
     [SerializeField] AudioClip levelUp;
 
+    // Particle effects
+
+    [SerializeField] ParticleSystem mainEngineParticles;
+    [SerializeField] ParticleSystem crashParticles;
+    [SerializeField] ParticleSystem finishParticles;
+
     // Start is called before the first frame update
     void Start()
     {
-
+      
         rigidBody = GetComponent<Rigidbody>();
         audioSource = GetComponent<AudioSource>();
 
@@ -29,7 +39,6 @@ public class Rocket : MonoBehaviour
     {
         if (state == State.Alive)
         {
-            // todo Stop sound when dying.
             RespondToThrustInput();
 
             RespondToRotateInput();
@@ -78,15 +87,27 @@ public class Rocket : MonoBehaviour
     {
         state = State.Transcending;
         Invoke("LoadNextLevel", 1f); //parameterise time
+        LevelUpEffects();
+    }
+
+    private void LevelUpEffects()
+    {
+        finishParticles.Play();
         audioSource.PlayOneShot(levelUp);
     }
 
     private void PlayerCrashed()
     {
+        crashEffects();
+        Invoke("LoadFirstLevel", 2f);
+    }
+
+    private void crashEffects()
+    {
         audioSource.Stop();
         audioSource.PlayOneShot(crashSound);
+        crashParticles.Play();
         state = State.Dying;
-        Invoke("LoadFirstLevel", 2f);
     }
 
     private void LoadFirstLevel()
@@ -113,19 +134,29 @@ public class Rocket : MonoBehaviour
 
         if (Input.GetKey(KeyCode.LeftArrow))
         {
-
-            rotationThisFrame = rcsThrust * Time.deltaTime;
-
-            transform.Rotate(Vector3.forward * rotationThisFrame); ;
+            rotationThisFrame = RotateLeft();
 
         }
         else if (Input.GetKey(KeyCode.RightArrow))
         {
-            rotationThisFrame = rcsThrust * Time.deltaTime;
-            transform.Rotate(Vector3.back * rotationThisFrame);
+            rotationThisFrame = RotateRight();
         }
 
         rigidBody.freezeRotation = false;
+    }
+
+    private float RotateRight()
+    {
+        float rotationThisFrame = rcsThrust * Time.deltaTime;
+        transform.Rotate(Vector3.back * rotationThisFrame);
+        return rotationThisFrame;
+    }
+
+    private float RotateLeft()
+    {
+        float rotationThisFrame = rcsThrust * Time.deltaTime;
+        transform.Rotate(Vector3.forward * rotationThisFrame);
+        return rotationThisFrame;
     }
 
     private void RespondToThrustInput()
@@ -138,6 +169,7 @@ public class Rocket : MonoBehaviour
         else
         {
             audioSource.Stop();
+            mainEngineParticles.Stop();
         }
     }
 
@@ -148,5 +180,6 @@ public class Rocket : MonoBehaviour
         {
             audioSource.PlayOneShot(mainEngine);
         }
+        mainEngineParticles.Play();
     }
 }
