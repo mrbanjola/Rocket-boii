@@ -51,6 +51,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rcsThrust: 150
   rocketThrust: 35
+  mainEngine: {fileID: 8300000, guid: 9d462ea161f144cb7a55d1700a9ace97, type: 3}
+  crashSound: {fileID: 8300000, guid: 50aeecbb5bba04716a8ba030d0e51e05, type: 3}
+  levelUp: {fileID: 8300000, guid: 2bb6c694f49f14b9d85599414f5f99cb, type: 3}
 --- !u!54 &1370687508
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -77,7 +80,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 9d462ea161f144cb7a55d1700a9ace97, type: 3}
+  m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1.6
