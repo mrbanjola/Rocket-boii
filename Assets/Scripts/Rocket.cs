@@ -13,9 +13,9 @@ public class Rocket : MonoBehaviour
     State state = State.Alive;
 
     // Values for thrust and rotational speed.
-    [SerializeField] float rcsThrust = 200f;
-    [SerializeField] float rocketThrust = 45f;
-
+    [SerializeField] float rcsThrust = 250f;
+    [SerializeField] float rocketThrust = 3000f;
+     
     // Game sounds
     [SerializeField] AudioClip mainEngine;
     [SerializeField] AudioClip crashSound;
@@ -112,14 +112,15 @@ public class Rocket : MonoBehaviour
 
     private void LoadFirstLevel()
     {
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
 
 
     }
 
     private void LoadNextLevel()
     {
-        SceneManager.LoadScene(1);
+        int currentLevel = SceneManager.GetActiveScene().buildIndex;
+        SceneManager.LoadScene(currentLevel + 1);
         
 
     }
@@ -175,7 +176,7 @@ public class Rocket : MonoBehaviour
 
     private void ApplyThrust()
     {
-        rigidBody.AddRelativeForce(Vector3.up * rocketThrust);
+        rigidBody.AddRelativeForce(Vector3.up * rocketThrust * Time.deltaTime);
         if (!audioSource.isPlaying)
         {
             audioSource.PlayOneShot(mainEngine);
