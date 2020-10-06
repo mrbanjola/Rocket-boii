@@ -10,7 +10,9 @@ public class Rocket : MonoBehaviour
    
 
     enum State { Alive, Dying, Transcending };
-    State state = State.Alive;
+    enum DebugMode {on, off};
+    State state = State.Alive; 
+    DebugMode deBugMode = DebugMode.off;
 
     // Values for thrust and rotational speed.
     [SerializeField] float rcsThrust = 250f;
@@ -47,6 +49,9 @@ public class Rocket : MonoBehaviour
 
         resetPosition();
 
+        toggleDebug();
+        debugLevelUp();
+
     }
 
     private void resetPosition()
@@ -58,15 +63,41 @@ public class Rocket : MonoBehaviour
         }
     }
 
+    private void toggleDebug()
+    {
+
+        if (Input.GetKey(KeyCode.D)) {
+
+            if (deBugMode == DebugMode.on)
+            {
+                deBugMode = DebugMode.off;
+            }
+            else
+            {
+
+                deBugMode = DebugMode.on;
+
+            }
+
+        }
+    }
+
+    private void debugLevelUp()
+    {
+        if (Input.GetKey(KeyCode.L) && deBugMode == DebugMode.on)
+        {
+            LoadNextLevel();
+        }
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
-        if (state != State.Alive) { return; }
+        if (state != State.Alive || deBugMode == DebugMode.on) { return; }
 
         switch (collision.gameObject.tag)
         {
             case "Friendly":
 
-                print("okay");
                 break;
 
             case "Finish":
@@ -112,15 +143,20 @@ public class Rocket : MonoBehaviour
 
     private void LoadFirstLevel()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-
+        SceneManager.LoadScene(0);
 
     }
 
     private void LoadNextLevel()
     {
         int currentLevel = SceneManager.GetActiveScene().buildIndex;
-        SceneManager.LoadScene(currentLevel + 1);
+        int nextLevel = currentLevel + 1;
+
+        if (nextLevel == SceneManager.sceneCountInBuildSettings)
+        {
+            nextLevel = 0;
+        }
+        SceneManager.LoadScene(nextLevel);
         
 
     }
